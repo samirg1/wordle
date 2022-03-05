@@ -5,6 +5,10 @@
 #   05/03/2022
 #
 
+# edit mode here (USER or BOT)
+MODE = 'USER'
+WORDS = 1 # only used for bot mode
+
 from guesses import guesses
 from answers import answers
 from time import time
@@ -245,7 +249,11 @@ def get_first_guess():
 
 
 if __name__ == '__main__':
-    wordle = Game('trace', True)
-    wordle.solve_word()
-
-# current runtime = 4sec per answer left
+    if MODE not in ('USER', 'BOT'):
+        print('ERROR : Invalid Mode Selected')
+    elif MODE == 'USER':
+        wordle = Game('trace')
+        wordle.solve_word()
+    else:
+        wordle = Game('trace', True, WORDS)
+        wordle.solve_word()
