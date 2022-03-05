@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+# 
+#   solver.py 
+#   Samir Gupta
+#   05/03/2022
+#
+
 from guesses import guesses
 from answers import answers
 from time import time
