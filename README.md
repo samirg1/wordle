@@ -20,17 +20,18 @@ breakdown of files
 - solver.py
   - a solver for wordle that has two modes:
     - user:
-      - to get user mode make sure the mode at the top of the file reads 'USER'
-      - the user mode prints the first guess solved for and presented in first_guess.txt and gets user input to determine the outcome
-      - it then calculates the next best guess (during the calculation stage the status of the calculation is printed)
-      - the format of the outcome is as follows: a string of length 5, with a '-' for a blank, 'o' for an orange square and 'g' for a green square in the correct order
+      - to get user mode enter 'USER' when prompted in the terminal
+      - the user mode prints the first guess (solved for and presented in first_guess.txt) and gets user to input the outcome
+      - the format of the inputted outcome is as follows: a string of length 5, with a '-' for a blank, 'o' for an orange square and 'g' for a green square, all in the correct order
+      - it then calculates the next best guess (during the calculation stage the status of the calculation is printed) and the next outcome is asked for
+      - this continues until there is only one answer left, in which case the game will print the answer and end code execution
     - bot:
-      - to get bot mode change the mode at the top of the file to 'BOT' and specify the amount of words to guess
-      - the bot mode requires one or two additional parameters to the creation of the game object
-      - the bot will then create its own word to guess and solve it using the same methodology as default mode (outcome is instead generated itself)
-      - as in the default mode the progress of this process is printed out to the terminal
-      - once the bot has guessed n words, it will print a summary of the words it has guessed, this includes: amount of words guessed, average amount of attempts needed, if there was any errors and the total time it took
+      - to get bot mode enter 'BOT' when prompted in the terminal
+      - then enter an integer > 0 (that determines how many words the bot will try and solve) when prompted in the terminal
+      - the bot will then create its own random word to solve, and solve it using the same methodology as user mode (outcome is instead generated itself rather than requiring user input)
+      - as in the user mode the progress of this process is printed out to the terminal
+      - once the bot has guessed all words, it will print a summary of the words it has guessed, this includes: amount of words guessed, average amount of attempts needed, if there was any errors and the total time it took
   
   - this file also contains the function used to create the first_guess.txt file
 
-any comments or feedback on code, programming practices, algorithm choices etc. is welcomed.
+any comments, feedback or improvements on code, programming practices, algorithm choices etc. is more than welcomed and very much appreciated :)
