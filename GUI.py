@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # 
-#   wordle_gui.py 
+#   gui.py 
 #   Samir Gupta
 #   03/03/2022
 #
