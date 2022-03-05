@@ -4,11 +4,6 @@
 #   Samir Gupta
 #   05/03/2022
 #
-
-# edit mode here (USER or BOT)
-MODE = 'USER'
-WORDS = 1 # only used for bot mode
-
 from guesses import guesses
 from answers import answers
 from time import time
@@ -40,7 +35,7 @@ class Game:
             i = randint(0, len(self.answers) - 1)
         self.chosen.append(i)
         self.word = self.answers[i]
-        print(f'\n{self.word.upper()} - {self.words+1}')
+        print(f'\n{self.word.upper()} - {self.words+1}/{self.total}')
     
     
     def check(self, guess):
@@ -87,10 +82,18 @@ class Game:
             print('RESULT : ' + ''.join(self.res))
         else:
             self.res = list(input(f"RESULT : "))
-        
+            while not outcome_check(self.res):
+                print(f'GUESS : {self.guess.upper()}              ')
+                self.res = list(input(f"RESULT : "))
+
         # answers are refined to meet result
         self.new_ans = list(filter(lambda an: is_possible(an, self.guess, self.res), self.answers))
-        print(f'ANSWERS LEFT : {len(self.new_ans)}')
+
+        # if guess was correct (without refining answers down to one) reduce the amount of guesses and dont print answers left
+        if self.res == ['g', 'g', 'g', 'g', 'g']:
+                self.n -= 1
+        else:
+            print(f'ANSWERS LEFT : {len(self.new_ans)}')
         
         # if one answer is left, game is won, if none are left, there was an error
         if len(self.new_ans) in (0, 1):
@@ -152,6 +155,20 @@ class Game:
         self.guess = 'trace'
         self.rand_word()
         self.solve_word()
+
+
+def outcome_check(outcome):
+    # determine if outcome is viable
+    for char in outcome:
+        if char not in ('-', 'o', 'g'):
+            print("ERROR : input can only contain '-', 'o' or 'g'")
+            return False
+
+    if len(outcome) != 5:
+        print("ERROR : input has to be 5 characters long")
+        return False
+    
+    return True
 
 
 def total_outcomes(n=5, part=[]):
@@ -249,11 +266,26 @@ def get_first_guess():
 
 
 if __name__ == '__main__':
-    if MODE not in ('USER', 'BOT'):
-        print('ERROR : Invalid Mode Selected')
-    elif MODE == 'USER':
-        wordle = Game('trace')
+    MODE = input('MODE: ').upper()
+    while MODE not in ('USER', 'BOT'):
+        print('MODE INVALID : Must be either USER or BOT')
+        MODE = input('MODE: ').upper()
+    
+    if MODE == 'BOT':
+        n = input("WORDS: ")        
+        while 1:
+            try:
+                n = int(n)
+                if n > 0:
+                    break
+            except:
+                pass
+            
+            print('WORDS INVALID : Must be an integer > 0')
+            n = input("WORDS: ")
+
+        wordle = Game('trace', True, n)
         wordle.solve_word()
     else:
-        wordle = Game('trace', True, WORDS)
+        wordle = Game('trace')
         wordle.solve_word()
