@@ -1,4 +1,4 @@
-# Projects
+# projects
 
 list of current projects
 
