@@ -7,6 +7,7 @@
 from guesses import guesses
 from answers import answers
 from time import time
+from random import shuffle
 both = guesses + answers
 
 class Game:
@@ -20,24 +21,26 @@ class Game:
         self.outcomes = total_outcomes()
         if self.bot:
             self.time = time()
-            self.chosen = []
+            self.rand_ans = [a for a in answers]
+            shuffle(self.rand_ans)
+            self.rand_n = 0
             self.errors = 0
             self.attempts = 0
             self.words = 0
             self.total = n
             self.rand_word()
 
+
     def rand_word(self):
-        # finding a random word in answers, making sure it has not been picked before
-        from random import randint
-        i = randint(0, len(self.answers) - 1)
-        while i in self.chosen:
-            i = randint(0, len(self.answers) - 1)
-        self.chosen.append(i)
-        self.word = self.answers[i]
+        # getting a random word in answers
+        self.word = self.rand_ans[self.rand_n]
+        self.rand_n += 1
+        if self.rand_n == len(self.rand_ans):
+            self.rand_n = 0
+            shuffle(self.rand_ans)
         print(f'\n{self.word.upper()} - {self.words+1}/{self.total}')
     
-    
+
     def check(self, guess):
             # checking a guess against the word, returns the outcome of the guess
 
@@ -69,6 +72,7 @@ class Game:
                         letters[guess[x]] = 1
             return outcome
 
+
     def solve_word(self):
         # function used to solve for a word
 
@@ -98,7 +102,25 @@ class Game:
         # if one answer is left, game is won, if none are left, there was an error
         if len(self.new_ans) in (0, 1):
             self.word_complete(bool(len(self.new_ans)))
-            return
+            return 
+    
+        # using next_guess.txt to find the second guess after trace
+        if self.guess == 'trace':
+            with open('next_guess.txt', 'r') as f:
+
+                # go through each line in the file
+                for line in f.readlines():
+
+                    # get the outcome from the line
+                    split = line[:-1].split(' - ')
+                    o_check = [split[0][i] for i in range(len(split[0])) if split[0][i] in ('g', 'o', '-')]
+
+                    # if the outcome from the line is the one got when 'trace' was used, bypass solving for the second guess and go straight to the third
+                    if o_check == self.res:
+                        self.answers = self.new_ans
+                        self.guess = split[1]
+                        self.solve_word()
+                        return 
         
         # hold a temporary best
         best = ('', len(self.new_ans))
@@ -124,6 +146,7 @@ class Game:
         self.answers = self.new_ans
         self.guess = best[0]
         self.solve_word()
+
 
     def word_complete(self, success):
         # to be run when a word is either solved or an error occured
@@ -265,6 +288,34 @@ def get_first_guess():
             f.write(f'{x[0]} - {x[1]}\n')
 
 
+def get_next_word():
+    # finding the next guess after 'trace' by working out the best possible word depending on the 243 outcomes
+    first_guess = 'trace'
+    outcomes = total_outcomes()
+    for o1 in reversed(outcomes):
+        print(o1)
+        ans_mid = list(filter(lambda a: is_possible(a, first_guess, o1), answers))
+        best = ('', len(ans_mid))
+        for w in range(len(both)):
+            total = len(outcomes)
+            possible_ans = 0
+            for o2 in outcomes: # check all outcomes
+                ans_left = len(list(filter(lambda a: is_possible(a, both[w], o2), ans_mid)))
+            
+                if not ans_left:
+                    total -= 1
+                possible_ans += ans_left
+
+            if total != 0:
+                best = min(best, (both[w], possible_ans/total), key=lambda x: x[1])
+
+            print(f'{w+1}/{len(both)}', end='\r')
+
+        # print to text file
+        with open('next_guess.txt', 'a') as f:
+            f.write(f'{o1} - {best[0]}\n')
+
+
 if __name__ == '__main__':
     MODE = input('MODE: ').upper()
     while MODE not in ('USER', 'BOT'):
@@ -276,12 +327,12 @@ if __name__ == '__main__':
         while 1:
             try:
                 n = int(n)
-                if n > 0:
+                if n > 0 and n <= 200: # 200 is set as a limit to prevent exceeding recursion depth
                     break
             except:
                 pass
             
-            print('WORDS INVALID : Must be an integer > 0')
+            print('WORDS INVALID : Must be an integer n where 1 <= n <= 200')
             n = input("WORDS: ")
 
         wordle = Game('trace', True, n)
