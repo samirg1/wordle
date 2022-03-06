@@ -1,4 +1,4 @@
-# Wordle
+# wordle
 
 breakdown of files
 
