@@ -1,0 +1,28 @@
+#futureTrips {
+    overflow-y: scroll;
+    height: 270px;
+    border-width: 4px;
+    border-style: dotted;
+    border-color: orange;
+}
+
+#pastTrips {
+    overflow-y: scroll;
+    height: 270px;
+    border-width: 4px;
+    border-style: dotted;
+    border-color: orange;
+}
+
+#appLogo {
+    height: 20px;
+    width: 20px;
+}
+
+.sorting {
+    padding-left: 10px;
+}
+
+h1 {
+    padding: 10px;
+}

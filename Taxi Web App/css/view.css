@@ -1,0 +1,31 @@
+#routeSummarySpan {
+    border-width: 5px;
+    border-color: orange;
+    border-style: dashed;
+    padding: 10px;
+}
+
+#map {
+    height: 500px;
+}
+
+#viewDetails {
+    font-size: 16px;
+}
+
+.div {
+    padding-top: 20px;
+}
+
+#appLogo {
+    height: 20px;
+    width: 20px;
+}
+
+div {
+    font-size: large;
+}
+
+b {
+    font-size: large;
+}
