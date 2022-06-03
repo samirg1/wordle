@@ -6,3 +6,7 @@ list of current projects
   - contains a solver and gui for wordle
 - nerdle.py
   - nerdle guess finder
+- Taxi Web App
+  - A web based application for a (fake) taxi service
+- All-NBA
+  - An IOS App for the NBA
