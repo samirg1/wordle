@@ -30,25 +30,31 @@
 int *get_result()
 {
     static int result[WORD_SIZE - 1];
-    printf("RESULT: ");
-    for (int i = 0; i < WORD_SIZE - 1; i++)
-    {
-        char c = getchar();
-        if (c == '\n')
+    while (1) {
+        printf("RESULT: ");
+        int error_detected = 0;
+        for (int i = 0; i < WORD_SIZE - 1; i++)
         {
-            i--;
-            continue;
+            char c = getchar();
+            if (c == '\n')
+            {
+                i--;
+                continue;
+            }
+
+            if (c == GREEN_INPUT)
+                result[i] = GREEN;
+            else if (c == ORANGE_INPUT)
+                result[i] = ORANGE;
+            else if (c == BLACK_INPUT)
+                result[i] = BLACK;
+            else
+                error_detected = 1;
         }
-
-        if (c == GREEN_INPUT)
-            result[i] = GREEN;
-        else if (c == ORANGE_INPUT)
-            result[i] = ORANGE;
-        else
-            result[i] = BLACK;
+        if (error_detected == 0) 
+            return result;
+        printf("** invalid result **\n");
     }
-
-    return result;
 }
 
 void get_answers_guesses(char answers[][WORD_SIZE], char guesses[][WORD_SIZE])
