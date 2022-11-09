@@ -66,7 +66,7 @@ int *get_result()
         int error_detected = 0;
         for (int i = 0; i < WORD_SIZE - 1; i++)
         {
-            char c = getchar();
+            char c = to_lower(getchar());
             if (c == '\n')
             {
                 i--;
