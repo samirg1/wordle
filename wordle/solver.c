@@ -27,6 +27,37 @@
 
 #define NULL_INDEX -1
 
+int count_chr(char *string, char character)
+{
+    int count = 0;
+    for (int i = 0; i < WORD_SIZE; i++)
+    {
+        if (string[i] == character)
+            count++;
+    }
+    return count;
+}
+
+char to_lower(char character) 
+{
+    if (character >= 'A' && character <= 'Z')
+    {
+        return character + 'a' - 'A';
+    }
+    return character;
+}
+
+char *to_lower_str(char string[])
+{
+    int i = 0;
+    while (string[i] != '\0') 
+    {
+        string[i] = to_lower(string[i]);
+        i++;
+    }
+    return string;
+}
+
 int *get_result()
 {
     static int result[WORD_SIZE - 1];
@@ -90,17 +121,6 @@ void get_all_possible_outcomes(int outcomes[TOTAL_OUTCOMES][WORD_SIZE - 1])
             num /= OUTCOMES_LENGTH;
         }
     }
-}
-
-int count_chr(char *string, char character)
-{
-    int count = 0;
-    for (int i = 0; i < WORD_SIZE; i++)
-    {
-        if (string[i] == character)
-            count++;
-    }
-    return count;
 }
 
 bool is_possible(char answer[WORD_SIZE], char guess[WORD_SIZE], int outcome[WORD_SIZE - 1])
