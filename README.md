@@ -3,7 +3,7 @@
 list of current projects
 
 - wordle
-  - contains a solver and gui for wordle
+  - contains a solver for wordle
 - nerdle.py
   - nerdle guess finder
 - Taxi Web App
