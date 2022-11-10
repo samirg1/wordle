@@ -4,26 +4,26 @@
  * @version 1.0
  * @date 2022-09-11
  * @note This implementation was originally translated from Python
-*/
+ */
 
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
 
-#define ANSWER_LENGTH 2315 // the amount of valid answers wordle has
+#define ANSWER_LENGTH 2315   // the amount of valid answers wordle has
 #define GUESSES_LENGTH 12972 // the amount of valid guesses wordle allows
 
-#define WORD_SIZE 6 // the total word size of each word (5 + escaping)
+#define WORD_SIZE 6      // the total word size of each word (5 + escaping)
 #define ALPHABET_SIZE 26 // the total size of the alphabet the words derive from
 
 #define TOTAL_OUTCOMES 243 // the total number of outcomes possible in wordle
-#define OUTCOMES_LENGTH 3 // the total number of options for each letter in an outcome
-#define GREEN_INPUT 'g' // the green input character
-#define ORANGE_INPUT 'o' // the orange input character
-#define BLACK_INPUT '-' // the black input character
-#define GREEN 2 // the green integer used in replacement of the green character
-#define ORANGE 1 // the orange integer used in replacement of the orange character
-#define BLACK 0 // the black integer used in replacement of the black character
+#define OUTCOMES_LENGTH 3  // the total number of options for each letter in an outcome
+#define GREEN_INPUT 'g'    // the green input character
+#define ORANGE_INPUT 'o'   // the orange input character
+#define BLACK_INPUT '-'    // the black input character
+#define GREEN 2            // the green integer used in replacement of the green character
+#define ORANGE 1           // the orange integer used in replacement of the orange character
+#define BLACK 0            // the black integer used in replacement of the black character
 
 #define NULL_INDEX -1
 
@@ -38,7 +38,7 @@ int count_chr(char *string, char character)
     return count;
 }
 
-char to_lower(char character) 
+char to_lower(char character)
 {
     if (character >= 'A' && character <= 'Z')
     {
@@ -47,21 +47,41 @@ char to_lower(char character)
     return character;
 }
 
-char *to_lower_str(char string[])
+char *get_first_guess(char guesses[][WORD_SIZE])
 {
-    int i = 0;
-    while (string[i] != '\0') 
+    static char first_guess[WORD_SIZE];
+    printf("\n");
+    while (1)
     {
-        string[i] = to_lower(string[i]);
-        i++;
+        printf(" GUESS: ");
+
+        for (int i = 0; i < WORD_SIZE - 1; i++)
+        {
+            char c = to_lower(getchar());
+            if (c == '\n')
+            {
+                i--;
+                continue;
+            }
+            first_guess[i] = c;
+        }
+        first_guess[WORD_SIZE - 1] = '\0';
+
+        for (int i = 0; i < GUESSES_LENGTH; i++)
+        {
+            if (strcmp(guesses[i], first_guess) == 0)
+                return first_guess;
+        }
+
+        printf("** invalid first guess **\n");
     }
-    return string;
 }
 
 int *get_result()
 {
     static int result[WORD_SIZE - 1];
-    while (1) {
+    while (1)
+    {
         printf("RESULT: ");
         int error_detected = 0;
         for (int i = 0; i < WORD_SIZE - 1; i++)
@@ -82,7 +102,7 @@ int *get_result()
             else
                 error_detected = 1;
         }
-        if (error_detected == 0) 
+        if (error_detected == 0)
             return result;
         printf("** invalid result **\n");
     }
@@ -299,11 +319,7 @@ int main()
     char guesses[GUESSES_LENGTH][WORD_SIZE];
     get_answers_guesses(answers, guesses);
 
-    printf("\n GUESS: ");
-    char first_guess[WORD_SIZE];
-    for (int i = 0; i < WORD_SIZE - 1; i++)
-        first_guess[i] = getchar();
-    first_guess[WORD_SIZE - 1] = '\0';
+    char *first_guess = get_first_guess(guesses);
 
     int all_outcomes[TOTAL_OUTCOMES][WORD_SIZE - 1];
     get_all_possible_outcomes(all_outcomes);
