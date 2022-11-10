@@ -5,7 +5,7 @@
  * @note This implementation was originally translated from Python
  */
 
-#include "shared_functions.c"
+#include "shared.c"
 
 #define ANSWER_LENGTH 2315         // the amount of valid answers wordle has
 #define GUESSES_LENGTH 12972       // the amount of valid guesses wordle allows

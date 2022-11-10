@@ -23,13 +23,14 @@
 /**
  * Counts the number of a particular character in a string.
  * @param string The string to look in.
+ * @param n The number of characters in the string.
  * @param character The character to look for.
  * @return The number of this character in the string.
  */
-int count_chr(char *string, char character)
+int count_chr(char *string, int n, char character)
 {
     int count = 0;
-    for (int i = 0; i < WORD_SIZE; i++)
+    for (int i = 0; i < n; i++)
     {
         if (string[i] == character)
             count++;
@@ -114,7 +115,7 @@ bool is_possible(char answer[WORD_SIZE], char guess[WORD_SIZE], int outcome[WORD
         while (order[i][j] != NULL_INDEX)
         {
             int index = order[i][j];
-            int count = count_chr(answer, guess[index]);
+            int count = count_chr(answer, WORD_SIZE, guess[index]);
             int checked_index = guess[index] - 'a' + 1; // index for the checked array
 
             // if the outcome is green, check if answer contains guess[index] at position index and add to checked

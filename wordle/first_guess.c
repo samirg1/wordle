@@ -4,14 +4,10 @@
  * @date: 10-11-2022
  */
 
-#include "shared_functions.c"
+#include "shared.c"
 
 #define OUTPUT_FILE "first_guess.txt" // output file name
-#define ANSWER_LENGTH 2315            // the amount of valid answers wordle has
-#define GUESSES_LENGTH 12972          // the amount of valid guesses wordle allows
 #define OUTPUT_LENGTH 20              // the length of each output in output file "XXXXX - "
-#define WORD_SIZE 6                   // the total word size of each word (5 + escaping)
-#define TOTAL_OUTCOMES 243            // the total number of outcomes possible in wordle
 
 /**
  * Find the minimum of a number array from index to end.
