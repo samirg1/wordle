@@ -7,10 +7,10 @@
 
 #include "shared.c"
 
-#define ANSWER_LENGTH 2315         // the amount of valid answers wordle has
-#define GUESSES_LENGTH 12972       // the amount of valid guesses wordle allows
+#define ANSWER_LENGTH 2315   // the amount of valid answers wordle has
+#define GUESSES_LENGTH 12972 // the amount of valid guesses wordle allows
 
-#define WORD_SIZE 6      // the total word size of each word (5 + escaping)
+#define WORD_SIZE 6 // the total word size of each word (5 + escaping)
 
 #define TOTAL_OUTCOMES 243 // the total number of outcomes possible in wordle
 #define GREEN_INPUT 'g'    // the green input character
@@ -114,6 +114,49 @@ char *find_best_guess(char guesses[GUESSES_LENGTH][WORD_SIZE], char answers[ANSW
     double min_average = ANSWER_LENGTH; // initialise minimum average
     static char min_word[WORD_SIZE];    // initialise minimum word
 
+    // check all available answers first
+    int z = 0;
+    while (answer_indexes[z] != NULL_INDEX)
+    {
+        int total = TOTAL_OUTCOMES; // initialise total number of valid outcomes
+        int possibles = 0;          // initialise number of possible answers
+
+        for (int j = 0; j < TOTAL_OUTCOMES; j++) // for each outcome
+        {
+            int answers_left = 0; // initialise number of answers left for this outcome
+            int k = 0;
+            while (answer_indexes[k] != NULL_INDEX) // for each available answer check if it is possible with the current guess and outcome
+            {
+                if (is_possible(answers[answer_indexes[k]], answers[answer_indexes[z]], outcomes[j]))
+                    answers_left++; // if so add to number of answers left for this outcome
+                k++;
+            }
+
+            if (answers_left == 0)     // if we have no answers left for this outcome
+                total--;               // valid outcomes decreases
+            possibles += answers_left; // add to total number of possible answers
+        }
+
+        double average_words_left = (double)possibles / total; // get the average number of answers left for this guess
+        if (average_words_left == 1)
+            return answers[answer_indexes[z]]; // if average is 1, shortcut and return immediately (can't get better)
+
+        if (average_words_left < min_average) // otherwise, update min_average, and min_word if out new average is smaller than min_average
+        {
+            strcpy(min_word, answers[answer_indexes[z]]);
+            min_average = average_words_left;
+        }
+
+        if (z % 3 == 0)
+            printf("Checking answers.\r"); // print current state of processing
+        else if (z % 3 == 1)
+            printf("Checking answers..\r");
+        else
+            printf("Checking answers...\r");
+        fflush(stdout);
+        z++;
+    }
+
     for (int i = 0; i < GUESSES_LENGTH; i++) // for each guess
     {
         int total = TOTAL_OUTCOMES; // initialise total number of valid outcomes
@@ -198,11 +241,11 @@ int filter_answers(char answers[ANSWER_LENGTH][WORD_SIZE], int answer_indexes[AN
  */
 char *solve_word(int *total_guesses, char current_guess[WORD_SIZE], char answers[ANSWER_LENGTH][WORD_SIZE], char guesses[GUESSES_LENGTH][WORD_SIZE], int all_outcomes[TOTAL_OUTCOMES][WORD_SIZE - 1], int answer_indexes[ANSWER_LENGTH + 1])
 {
-    (*total_guesses)++; // increment the total guesses
+    (*total_guesses)++;         // increment the total guesses
     int *result = get_result(); // get the result from the current guess
 
     int answers_left = filter_answers(answers, answer_indexes, result, current_guess); // filter the answers to find how many answers are left
-    if (result[0] == GREEN && result[1] == GREEN && result[2] == GREEN && result[3] == GREEN && result[4] == GUESSES_LENGTH)
+    if (result[0] == GREEN && result[1] == GREEN && result[2] == GREEN && result[3] == GREEN && result[4] == GREEN)
     { // if the current guess is correct, return it and decrement total guesses (as we found it before the next guess)
         (*total_guesses)--;
         return current_guess;
@@ -215,8 +258,8 @@ char *solve_word(int *total_guesses, char current_guess[WORD_SIZE], char answers
     else if (answers_left == 1) // if we have one answer left, return it
         return answers[answer_indexes[0]];
 
-    char *next_best = find_best_guess(guesses, answers, all_outcomes, answer_indexes); // otherwise find the next best guess
-    printf(" GUESS: %s         \n", next_best); // print it out
+    char *next_best = find_best_guess(guesses, answers, all_outcomes, answer_indexes);           // otherwise find the next best guess
+    printf(" GUESS: %s         \n", next_best);                                                  // print it out
     return solve_word(total_guesses, next_best, answers, guesses, all_outcomes, answer_indexes); // keep solving
 }
 
@@ -236,7 +279,7 @@ int main()
         answer_indexes[i] = i;
     answer_indexes[ANSWER_LENGTH] = NULL_INDEX;
 
-    int total_guesses = 1; // we've had one guess already
+    int total_guesses = 1;                                                                                    // we've had one guess already
     char *solution = solve_word(&total_guesses, first_guess, answers, guesses, all_outcomes, answer_indexes); // solve for the word
 
     if (solution == NULL) // if invalid results were inputted that lead to no answers left
